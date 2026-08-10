@@ -1,0 +1,2254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>preact-signal-modal — documentation</title>
+    <meta
+      name="description"
+      content="Signal-driven modals for Preact: an awaitable createModal(), a declarative <Modal isOpen>, Ionic-identical Web Animations transitions, sheet modals with breakpoints and a real focus trap. Complete API reference."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23A12F86'/%3E%3Crect x='6.5' y='8.5' width='19' height='15' rx='3.2' fill='%23fff'/%3E%3Crect x='10' y='12' width='12' height='2.2' rx='1.1' fill='%23A12F86'/%3E%3Crect x='10' y='16.4' width='7.5' height='2.2' rx='1.1' fill='%23A12F86'/%3E%3C/svg%3E"
+    />
+    <style>
+      /* ── tokens ──────────────────────────────────────────────────────── */
+      :root {
+        --ground: #fbfbfd;
+        --surface: #ffffff;
+        --surface-2: #f3f4f8;
+        --code-bg: #f7f7fb;
+        --ink: #14161c;
+        --ink-2: #3a3f4c;
+        --muted: #6b7181;
+        --line: #e3e5ec;
+        --line-2: #edeff4;
+        --accent: #a12f86;
+        --accent-2: #7e2269;
+        --accent-soft: #fbeaf6;
+        --wire: #0e7c7b;
+        --warn: #8a5200;
+        --warn-soft: #fcf3e5;
+        --warn-line: #e8cda0;
+        --danger: #b42318;
+        --danger-soft: #fdf1f0;
+        --danger-line: #f0c8c4;
+        --tok-str: #0e7c7b;
+        --tok-kw: #7a3ea8;
+        --tok-com: #8a90a0;
+        --tok-num: #a34a00;
+        --tok-key: #2b5fcf;
+        --shadow: 0 1px 2px rgba(20, 22, 28, 0.05),
+          0 8px 24px -12px rgba(20, 22, 28, 0.14);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --ground: #0e1014;
+          --surface: #14171d;
+          --surface-2: #191d25;
+          --code-bg: #12151b;
+          --ink: #e9ebf1;
+          --ink-2: #c3c9d6;
+          --muted: #8b93a6;
+          --line: #262b35;
+          --line-2: #1e222b;
+          --accent: #f0a4dc;
+          --accent-2: #f7c6e9;
+          --accent-soft: #2c162a;
+          --wire: #4fd1c5;
+          --warn: #e2a85c;
+          --warn-soft: #241c10;
+          --warn-line: #4a3a1e;
+          --danger: #ff9086;
+          --danger-soft: #251413;
+          --danger-line: #4c2622;
+          --tok-str: #5fd3c6;
+          --tok-kw: #c79bf0;
+          --tok-com: #6e7688;
+          --tok-num: #e0a162;
+          --tok-key: #8ab4ff;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4),
+            0 8px 24px -12px rgba(0, 0, 0, 0.6);
+        }
+      }
+      :root[data-theme="dark"] {
+        --ground: #0e1014;
+        --surface: #14171d;
+        --surface-2: #191d25;
+        --code-bg: #12151b;
+        --ink: #e9ebf1;
+        --ink-2: #c3c9d6;
+        --muted: #8b93a6;
+        --line: #262b35;
+        --line-2: #1e222b;
+        --accent: #f0a4dc;
+        --accent-2: #f7c6e9;
+        --accent-soft: #2c162a;
+        --wire: #4fd1c5;
+        --warn: #e2a85c;
+        --warn-soft: #241c10;
+        --warn-line: #4a3a1e;
+        --danger: #ff9086;
+        --danger-soft: #251413;
+        --danger-line: #4c2622;
+        --tok-str: #5fd3c6;
+        --tok-kw: #c79bf0;
+        --tok-com: #6e7688;
+        --tok-num: #e0a162;
+        --tok-key: #8ab4ff;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.4),
+          0 8px 24px -12px rgba(0, 0, 0, 0.6);
+      }
+      :root[data-theme="light"] {
+        --ground: #fbfbfd;
+        --surface: #ffffff;
+        --surface-2: #f3f4f8;
+        --code-bg: #f7f7fb;
+        --ink: #14161c;
+        --ink-2: #3a3f4c;
+        --muted: #6b7181;
+        --line: #e3e5ec;
+        --line-2: #edeff4;
+        --accent: #a12f86;
+        --accent-2: #7e2269;
+        --accent-soft: #fbeaf6;
+        --wire: #0e7c7b;
+        --warn: #8a5200;
+        --warn-soft: #fcf3e5;
+        --warn-line: #e8cda0;
+        --danger: #b42318;
+        --danger-soft: #fdf1f0;
+        --danger-line: #f0c8c4;
+        --tok-str: #0e7c7b;
+        --tok-kw: #7a3ea8;
+        --tok-com: #8a90a0;
+        --tok-num: #a34a00;
+        --tok-key: #2b5fcf;
+        --shadow: 0 1px 2px rgba(20, 22, 28, 0.05),
+          0 8px 24px -12px rgba(20, 22, 28, 0.14);
+      }
+
+      /* ── base ────────────────────────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+        scroll-behavior: smooth;
+        scroll-padding-top: 1.5rem;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+      body {
+        margin: 0;
+        background: var(--ground);
+        color: var(--ink);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ── shell ───────────────────────────────────────────────────────── */
+      .shell {
+        display: grid;
+        grid-template-columns: 17rem minmax(0, 1fr);
+        gap: 3.5rem;
+        max-width: 78rem;
+        margin: 0 auto;
+        padding: 0 1.75rem;
+      }
+      @media (max-width: 62rem) {
+        .shell {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 0;
+        }
+      }
+
+      /* ── sidebar ─────────────────────────────────────────────────────── */
+      .rail {
+        position: sticky;
+        top: 0;
+        align-self: start;
+        max-height: 100vh;
+        overflow-y: auto;
+        padding: 2.25rem 0 3rem;
+      }
+      .brand {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin-bottom: 0.35rem;
+      }
+      .brand-mark {
+        font: 600 0.95rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        color: var(--accent);
+        letter-spacing: -0.01em;
+      }
+      .brand-ver {
+        font: 500 0.7rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        color: var(--muted);
+        padding: 0.15rem 0.35rem;
+        border: 1px solid var(--line);
+        border-radius: 0.3rem;
+      }
+      .brand-sub {
+        margin: 0 0 1.5rem;
+        font-size: 0.82rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .toc-title {
+        font: 600 0.68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+        margin: 0 0 0.7rem;
+      }
+      nav.toc ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.05rem;
+      }
+      nav.toc > ol > li > a {
+        font-weight: 550;
+      }
+      nav.toc a {
+        display: block;
+        padding: 0.27rem 0.6rem;
+        border-left: 2px solid var(--line-2);
+        color: var(--ink-2);
+        text-decoration: none;
+        font-size: 0.855rem;
+        line-height: 1.35;
+        transition: color 0.12s, border-color 0.12s, background 0.12s;
+      }
+      nav.toc a:hover {
+        color: var(--accent);
+        background: var(--accent-soft);
+        border-left-color: var(--accent);
+      }
+      nav.toc a.is-active {
+        color: var(--accent);
+        border-left-color: var(--accent);
+        font-weight: 600;
+      }
+      nav.toc a:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: -2px;
+        border-radius: 0.2rem;
+      }
+      nav.toc ol ol a {
+        padding-left: 1.35rem;
+        font-size: 0.81rem;
+        color: var(--muted);
+      }
+      .rail-foot {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--line);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      /* theme toggle: fixed at the top of the screen, icon only */
+      .theme-toggle {
+        position: fixed;
+        top: 0.9rem;
+        right: 0.9rem;
+        z-index: 20;
+        display: grid;
+        place-items: center;
+        width: 2.35rem;
+        height: 2.35rem;
+        padding: 0;
+        color: var(--ink-2);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        transition: color 0.12s, border-color 0.12s, background 0.12s;
+      }
+      .theme-toggle:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .theme-toggle:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .theme-toggle .icon {
+        width: 1.15rem;
+        height: 1.15rem;
+        /* both icons share one grid cell, so swapping never shifts anything */
+        grid-area: 1 / 1;
+      }
+
+      /* Which icon shows is derived from the same signals that drive the
+         palette, so it stays correct with or without an explicit override. */
+      .icon-sun {
+        display: none;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme]) .icon-moon {
+          display: none;
+        }
+        :root:not([data-theme]) .icon-sun {
+          display: block;
+        }
+      }
+      :root[data-theme="dark"] .icon-moon {
+        display: none;
+      }
+      :root[data-theme="dark"] .icon-sun {
+        display: block;
+      }
+      :root[data-theme="light"] .icon-moon {
+        display: block;
+      }
+      :root[data-theme="light"] .icon-sun {
+        display: none;
+      }
+
+      /* ── mobile top bar: hamburger (left) + theme toggle (right) ──────── */
+      /* Hidden on desktop; the whole apparatus only appears below 62rem.    */
+      .mobile-bar {
+        display: none;
+      }
+      .nav-toggle {
+        display: grid;
+        place-items: center;
+        width: 2.35rem;
+        height: 2.35rem;
+        padding: 0;
+        color: var(--ink-2);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 0.6rem;
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        transition: color 0.12s, border-color 0.12s, background 0.12s;
+      }
+      .nav-toggle:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .nav-toggle:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .nav-toggle .icon {
+        width: 1.3rem;
+        height: 1.3rem;
+        grid-area: 1 / 1; /* both icons share one cell, so swapping never shifts */
+      }
+      .nav-toggle .icon-close {
+        display: none;
+      }
+      .nav-scrim {
+        display: none;
+      }
+
+      @media (max-width: 62rem) {
+        /* the bar itself */
+        .mobile-bar {
+          display: flex;
+          align-items: center;
+          gap: 0.7rem;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 3.4rem;
+          padding: 0 0.9rem;
+          background: var(--surface);
+          border-bottom: 1px solid var(--line);
+          box-shadow: var(--shadow);
+          z-index: 40;
+        }
+        .mobile-bar .bar-brand {
+          font: 600 0.95rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas,
+            monospace;
+          color: var(--accent);
+          letter-spacing: -0.01em;
+        }
+        /* the existing theme toggle rides on the right end of the bar */
+        .theme-toggle {
+          top: 0.525rem;
+          right: 0.9rem;
+          border-radius: 0.6rem;
+          z-index: 41;
+        }
+        /* make room for the fixed bar and keep anchors clear of it */
+        body {
+          padding-top: 3.4rem;
+        }
+        html {
+          scroll-padding-top: 4.4rem;
+        }
+
+        /* hamburger flips to a close icon while the drawer is open */
+        body.nav-open .nav-toggle .icon-menu {
+          display: none;
+        }
+        body.nav-open .nav-toggle .icon-close {
+          display: block;
+        }
+
+        /* dimmed backdrop behind the drawer */
+        .nav-scrim {
+          display: block;
+          position: fixed;
+          inset: 3.4rem 0 0;
+          background: rgba(8, 9, 12, 0.42);
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.18s, visibility 0.18s;
+          z-index: 35;
+        }
+        body.nav-open .nav-scrim {
+          opacity: 1;
+          visibility: visible;
+        }
+
+        /* the sidebar becomes a drawer that drops down from the bar */
+        .rail {
+          position: fixed;
+          top: 3.4rem;
+          left: 0;
+          right: 0;
+          max-height: calc(100dvh - 3.4rem);
+          overflow-y: auto;
+          padding: 1.4rem 1.6rem 2rem;
+          background: var(--ground);
+          border-bottom: 1px solid var(--line);
+          box-shadow: var(--shadow);
+          z-index: 36;
+          transform: translateY(-0.5rem);
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.18s, transform 0.18s, visibility 0.18s;
+        }
+        body.nav-open .rail {
+          transform: none;
+          opacity: 1;
+          visibility: visible;
+        }
+
+        /* inside the drawer the TOC is always expanded — no inner collapse */
+        .toc-shell {
+          border: 0;
+          background: none;
+          padding: 0;
+          margin: 0;
+        }
+        .toc-shell > summary {
+          display: none;
+        }
+      }
+      @media (min-width: 62.001rem) {
+        .toc-shell > summary {
+          display: none;
+        }
+      }
+
+      /* ── content ─────────────────────────────────────────────────────── */
+      main {
+        padding: 2.25rem 0 6rem;
+        min-width: 0;
+      }
+      .lede {
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 2.25rem;
+        margin-bottom: 2.5rem;
+      }
+      h1 {
+        font-family: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype",
+          Palatino, serif;
+        font-size: clamp(2.1rem, 1.4rem + 2.6vw, 3.1rem);
+        line-height: 1.06;
+        letter-spacing: -0.022em;
+        font-weight: 600;
+        margin: 0 0 0.7rem;
+        text-wrap: balance;
+      }
+      .lede p {
+        font-size: 1.08rem;
+        color: var(--ink-2);
+        margin: 0 0 1rem;
+        max-width: 62ch;
+      }
+      .lede p:last-child {
+        margin-bottom: 0;
+      }
+      .pitch {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 1.25rem;
+      }
+      .pitch span {
+        font: 500 0.74rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        color: var(--wire);
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 2rem;
+        padding: 0.38rem 0.7rem;
+      }
+
+      section {
+        scroll-margin-top: 1.5rem;
+        padding-top: 2.75rem;
+      }
+      section + section {
+        border-top: 1px solid var(--line-2);
+      }
+      h2 {
+        font-family: ui-serif, Georgia, "Iowan Old Style", Palatino, serif;
+        font-size: 1.85rem;
+        line-height: 1.15;
+        letter-spacing: -0.017em;
+        font-weight: 600;
+        margin: 0 0 0.35rem;
+        text-wrap: balance;
+      }
+      h3 {
+        font-size: 1.12rem;
+        font-weight: 650;
+        letter-spacing: -0.006em;
+        margin: 2.25rem 0 0.6rem;
+        text-wrap: balance;
+      }
+      h4 {
+        font: 600 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--muted);
+        margin: 1.75rem 0 0.55rem;
+      }
+      .eyebrow {
+        font: 600 0.68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.11em;
+        color: var(--accent);
+        margin: 0 0 0.55rem;
+      }
+      p {
+        margin: 0 0 1rem;
+        max-width: 68ch;
+      }
+      li > p {
+        margin-bottom: 0.4rem;
+      }
+      a {
+        color: var(--accent);
+        text-underline-offset: 0.17em;
+        text-decoration-thickness: 0.06em;
+      }
+      a:hover {
+        color: var(--accent-2);
+      }
+      a:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+        border-radius: 0.15rem;
+      }
+      ul,
+      ol {
+        margin: 0 0 1rem;
+        padding-left: 1.25rem;
+        max-width: 68ch;
+      }
+      li {
+        margin-bottom: 0.35rem;
+      }
+      li::marker {
+        color: var(--muted);
+      }
+      strong {
+        font-weight: 640;
+      }
+      hr {
+        border: 0;
+        border-top: 1px solid var(--line-2);
+        margin: 2rem 0;
+      }
+
+      /* inline code */
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas,
+          "Liberation Mono", monospace;
+        font-size: 0.875em;
+      }
+      p > code,
+      li > code,
+      td > code,
+      th > code,
+      h3 > code,
+      h2 > code,
+      summary > code,
+      dt > code {
+        background: var(--surface-2);
+        border: 1px solid var(--line-2);
+        border-radius: 0.3rem;
+        padding: 0.08em 0.34em;
+        color: var(--ink);
+        white-space: nowrap;
+      }
+      /* On a phone a long inline token like
+         `{ provide, useValue | useExisting, … }` is wider than the screen and,
+         kept on one line, pushes the whole page sideways (content gets clipped).
+         Below 62rem let these wrap; desktop keeps them on a single line. */
+      @media (max-width: 62rem) {
+        p > code,
+        li > code,
+        h3 > code,
+        h2 > code,
+        dt > code {
+          white-space: normal;
+          overflow-wrap: anywhere;
+        }
+      }
+
+      /* code blocks */
+      .snippet {
+        margin: 0 0 1.25rem;
+        border: 1px solid var(--line);
+        border-radius: 0.6rem;
+        background: var(--code-bg);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+      .snippet-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.45rem 0.8rem;
+        border-bottom: 1px solid var(--line-2);
+        background: var(--surface);
+      }
+      .snippet-lang {
+        font: 600 0.66rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--muted);
+      }
+      .snippet-note {
+        font: 500 0.72rem/1.3 system-ui, sans-serif;
+        color: var(--muted);
+        text-align: right;
+      }
+      .snippet pre {
+        margin: 0;
+        padding: 0.95rem 1rem;
+        overflow-x: auto;
+        font-size: 0.845rem;
+        line-height: 1.62;
+      }
+      .snippet code {
+        color: var(--ink);
+        white-space: pre;
+      }
+      .tok-str {
+        color: var(--tok-str);
+      }
+      .tok-kw {
+        color: var(--tok-kw);
+      }
+      .tok-com {
+        color: var(--tok-com);
+        font-style: italic;
+      }
+      .tok-num {
+        color: var(--tok-num);
+      }
+      .tok-key {
+        color: var(--tok-key);
+      }
+
+      /* callouts */
+      .note {
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--accent);
+        background: var(--surface);
+        border-radius: 0.5rem;
+        padding: 0.9rem 1.1rem;
+        margin: 0 0 1.25rem;
+      }
+      .note > :last-child {
+        margin-bottom: 0;
+      }
+      .note-label {
+        font: 600 0.68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--accent);
+        display: block;
+        margin-bottom: 0.4rem;
+      }
+      .note.warn {
+        border-left-color: var(--warn);
+        background: var(--warn-soft);
+        border-color: var(--warn-line);
+      }
+      .note.warn .note-label {
+        color: var(--warn);
+      }
+      .note.danger {
+        border-left-color: var(--danger);
+        background: var(--danger-soft);
+        border-color: var(--danger-line);
+      }
+      .note.danger .note-label {
+        color: var(--danger);
+      }
+
+      /* tables */
+      .table-wrap {
+        overflow-x: auto;
+        margin: 0 0 1.25rem;
+        border: 1px solid var(--line);
+        border-radius: 0.6rem;
+        background: var(--surface);
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.875rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.6rem 0.85rem;
+        border-bottom: 1px solid var(--line-2);
+        vertical-align: top;
+      }
+      thead th {
+        font: 600 0.68rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--muted);
+        background: var(--surface-2);
+        white-space: nowrap;
+      }
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      td code {
+        white-space: nowrap;
+      }
+      td:first-child {
+        white-space: nowrap;
+      }
+
+      /* definition rows for option reference */
+      .opts {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        border: 1px solid var(--line);
+        border-radius: 0.6rem;
+        overflow: hidden;
+        margin: 0 0 1.25rem;
+        background: var(--surface);
+      }
+      .opt {
+        display: grid;
+        grid-template-columns: 13rem minmax(0, 1fr);
+        gap: 1.25rem;
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid var(--line-2);
+      }
+      .opt:last-child {
+        border-bottom: 0;
+      }
+      @media (max-width: 46rem) {
+        .opt {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 0.25rem;
+        }
+      }
+      .opt-name {
+        font: 600 0.82rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        color: var(--accent);
+        word-break: break-word;
+      }
+      .opt-type {
+        display: block;
+        font: 400 0.74rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        color: var(--muted);
+        margin-top: 0.15rem;
+        white-space: normal;
+      }
+      .opt-body {
+        font-size: 0.9rem;
+        color: var(--ink-2);
+      }
+      .opt-body > :last-child {
+        margin-bottom: 0;
+      }
+      .opt-body p {
+        margin-bottom: 0.5rem;
+        max-width: none;
+      }
+
+      .anchor {
+        color: var(--muted);
+        text-decoration: none;
+        opacity: 0;
+        margin-left: 0.4rem;
+        font-weight: 400;
+      }
+      h2:hover .anchor,
+      h3:hover .anchor,
+      .anchor:focus-visible {
+        opacity: 1;
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        margin-top: 4rem;
+        padding-top: 1.5rem;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mobile-bar">
+      <button class="nav-toggle" type="button" id="nav-toggle" aria-label="Open navigation" aria-controls="site-rail" aria-expanded="false">
+        <svg class="icon icon-menu" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        <svg class="icon icon-close" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+      </button>
+      <span class="bar-brand">preact-signal-modal</span>
+    </header>
+    <div class="nav-scrim" id="nav-scrim"></div>
+
+    <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch theme">
+      <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+      </svg>
+      <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M12 2.6v2.2M12 19.2v2.2M4.2 12H2M22 12h-2.2" />
+          <path d="M5.9 5.9 4.4 4.4M19.6 19.6l-1.5-1.5M18.1 5.9l1.5-1.5M4.4 19.6l1.5-1.5" />
+        </g>
+      </svg>
+    </button>
+
+    <div class="shell">
+      <div class="rail" id="site-rail">
+        <div class="brand">
+          <span class="brand-mark">preact-signal-modal</span>
+          <span class="brand-ver">1.0.0</span>
+        </div>
+        <p class="brand-sub">
+          Signal-driven modals for Preact. Ionic motion, sheet gestures, zero re-renders.
+        </p>
+
+        <details class="toc-shell" open>
+          <summary>Contents</summary>
+          <p class="toc-title">Contents</p>
+          <nav class="toc" aria-label="Table of contents">
+            <ol>
+              <li><a href="#install">Install</a></li>
+              <li><a href="#quick-start">Quick start</a></li>
+              <li><a href="#concepts">Core concepts</a></li>
+              <li><a href="#container">ModalContainer</a></li>
+              <li>
+                <a href="#imperative">Imperative API</a>
+                <ol>
+                  <li><a href="#create-modal">createModal</a></li>
+                  <li><a href="#modal-ref">The modal handle</a></li>
+                  <li><a href="#close-modal">closeModal, closeAllModals</a></li>
+                  <li><a href="#reading-the-stack">hasModals, getTopModal</a></li>
+                </ol>
+              </li>
+              <li>
+                <a href="#component">The Modal component</a>
+                <ol>
+                  <li><a href="#trigger">trigger</a></li>
+                  <li><a href="#is-open">isOpen</a></li>
+                </ol>
+              </li>
+              <li><a href="#use-modal">useModal</a></li>
+              <li><a href="#dismissal">Dismissal and roles</a></li>
+              <li><a href="#can-dismiss">canDismiss</a></li>
+              <li><a href="#options">Options reference</a></li>
+              <li>
+                <a href="#animations">Animations</a>
+                <ol>
+                  <li><a href="#presets">The presets</a></li>
+                  <li><a href="#custom-animations">Your own animation</a></li>
+                  <li><a href="#create-animation">createAnimation</a></li>
+                </ol>
+              </li>
+              <li><a href="#styling">Styling</a></li>
+              <li>
+                <a href="#sheet">Sheet modals</a>
+                <ol>
+                  <li><a href="#breakpoints">Breakpoints</a></li>
+                  <li><a href="#gestures">Gestures</a></li>
+                </ol>
+              </li>
+              <li><a href="#accessibility">Accessibility</a></li>
+              <li><a href="#configuration">Configuration</a></li>
+              <li><a href="#typescript">TypeScript</a></li>
+            </ol>
+          </nav>
+        </details>
+      </div>
+
+      <main>
+        <header class="lede">
+          <h1>preact-signal-modal</h1>
+          <p>
+            Modals are where component state goes to rot. You add an <code>isModalOpen</code>
+            boolean, then a second one for the nested confirmation, then a
+            <code>pendingDeleteId</code> to remember what the confirmation was about, then an
+            effect to lock body scroll, then a key listener for Escape, then a ref to give focus
+            back to the button that opened it. None of that is your feature — and all of it
+            re-renders the component that owns it, several levels above the thing that actually
+            changed.
+          </p>
+          <p>
+            This package moves the whole lot into one signal-backed stack that lives outside your
+            component tree. Opening a modal re-renders nothing. The answer comes back as a promise,
+            so the state that only existed to remember the question can go. Scroll lock, Escape,
+            the focus trap and <code>inert</code> on the rest of the page are solved once, for the
+            stack. The transitions are Ionic's, ported keyframe for keyframe, and replaceable with
+            your own through the same builder Ionic uses.
+          </p>
+          <div class="pitch">
+            <span>zero re-renders</span>
+            <span>awaitable result</span>
+            <span>imperative + declarative</span>
+            <span>Ionic-identical motion</span>
+            <span>Web Animations API</span>
+            <span>custom animations</span>
+            <span>sheet modals</span>
+            <span>swipe to close</span>
+            <span>focus trap</span>
+            <span>inert</span>
+            <span>scroll lock</span>
+            <span>canDismiss guard</span>
+            <span>CSS variables</span>
+            <span>fully typed</span>
+            <span>no dependencies</span>
+          </div>
+        </header>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="install">
+          <p class="eyebrow">Getting started</p>
+          <h2>Install<a class="anchor" href="#install" aria-label="Link to Install">#</a></h2>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">sh</span></div>
+            <pre><code data-lang="sh">npm i @dmytromykhailiuk/preact-signal-modal</code></pre>
+          </div>
+
+          <div class="note">
+            <span class="note-label">Dependencies</span>
+            <p>
+              <code>preact &gt;= 10.25</code> and <code>@preact/signals ^2</code> are peer
+              dependencies. There are no runtime dependencies at all — the animation engine, the
+              focus trap and the gesture handling are part of the package.
+            </p>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="quick-start">
+          <h2>Quick start<a class="anchor" href="#quick-start" aria-label="Link to Quick start">#</a></h2>
+
+          <p>Mount the container once, near the root of your app:</p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span><span class="snippet-note">app.tsx</span></div>
+            <pre><code data-lang="ts">import { ModalContainer } from "@dmytromykhailiuk/preact-signal-modal";
+
+const App = () =&gt; (
+  &lt;&gt;
+    &lt;Routes /&gt;
+    &lt;ModalContainer /&gt;
+  &lt;/&gt;
+);</code></pre>
+          </div>
+
+          <p>Then open a modal from anywhere, and wait for the answer:</p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span><span class="snippet-note">a confirmation you can await</span></div>
+            <pre><code data-lang="ts">import { createModal, useModal } from "@dmytromykhailiuk/preact-signal-modal";
+
+const Confirm = ({ question }: { question: string }) =&gt; {
+  const modal = useModal&lt;boolean&gt;();
+  return (
+    &lt;&gt;
+      &lt;p&gt;{question}&lt;/p&gt;
+      &lt;button type="button" onClick={() =&gt; modal.close(true, "confirm")}&gt;Yes&lt;/button&gt;
+      &lt;button type="button" onClick={() =&gt; modal.close(false, "cancel")}&gt;No&lt;/button&gt;
+    &lt;/&gt;
+  );
+};
+
+const deleteFile = async (id: string) =&gt; {
+  const modal = createModal&lt;boolean&gt;(&lt;Confirm question="Delete this file?" /&gt;);
+  const { data, role } = await modal.afterClose;
+
+  if (role === "backdrop" || role === "escape") return; // dismissed, not answered
+  if (data) await api.delete(id);
+};</code></pre>
+          </div>
+
+          <p>
+            No <code>isOpen</code> state, no <code>pendingDeleteId</code>, no effect to clean up.
+            The component that called <code>deleteFile</code> does not re-render when the modal
+            opens, and it does not re-render when it closes.
+          </p>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="concepts">
+          <h2>Core concepts<a class="anchor" href="#concepts" aria-label="Link to Core concepts">#</a></h2>
+
+          <div class="opts">
+            <div class="opt">
+              <div class="opt-name">One stack<span class="opt-type">signal</span></div>
+              <div class="opt-body">
+                <p>
+                  Every open modal — imperative or declarative — lives in a single signal that
+                  <code>&lt;ModalContainer/&gt;</code> renders. That shared list is what gives the
+                  whole app one stacking order, one scroll lock and one focus trap, instead of one
+                  of each per modal you happen to write.
+                </p>
+              </div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">A result, not a flag<span class="opt-type">Promise</span></div>
+              <div class="opt-body">
+                <p>
+                  <code>afterClose</code> resolves to <code>{ data, role }</code> once the leave
+                  animation has finished and the content has been unmounted. A modal is a question;
+                  the promise is its answer.
+                </p>
+              </div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">Destroyed on close<span class="opt-type">not hidden</span></div>
+              <div class="opt-body">
+                <p>
+                  Unlike <code>&lt;ion-modal&gt;</code>, a closed modal leaves nothing in the DOM.
+                  Its content unmounts, its effects clean up, and reopening builds it fresh — so a
+                  form never comes back holding last week's draft.
+                </p>
+              </div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">Zero re-renders<span class="opt-type">by construction</span></div>
+              <div class="opt-body">
+                <p>
+                  The container mounts once and never re-renders. The stack is drawn with
+                  <code>&lt;For&gt;</code>, visibility with <code>&lt;Show&gt;</code>, and the
+                  whole present/dismiss lifecycle runs in effects against real DOM nodes. Nothing
+                  reads a <code>.value</code> while producing JSX.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="container">
+          <h2>ModalContainer<a class="anchor" href="#container" aria-label="Link to ModalContainer">#</a></h2>
+
+          <p>
+            Modals render where you put the container, not in a portal to <code>&lt;body&gt;</code>.
+            That is deliberate: it keeps the modal inside your app's stacking and theming context,
+            and it means a scoped stylesheet or a CSS-variable scope on an ancestor still applies.
+          </p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span></div>
+            <pre><code data-lang="ts">&lt;App&gt;
+  &lt;Routes /&gt;
+  &lt;ModalContainer /&gt;   {/* once, anywhere — usually last */}
+&lt;/App&gt;</code></pre>
+          </div>
+
+          <p>
+            Only the first container mounted renders anything, so a stray one in a lazily-loaded
+            route cannot duplicate the stack. Unmounting it hands the role to the next one.
+          </p>
+
+          <div class="note warn">
+            <span class="note-label">Required</span>
+            <p>
+              Without a container, <code>createModal()</code> still returns a working handle and
+              <code>hasModals()</code> still reports it — it simply has nowhere to be drawn.
+              If a modal seems to do nothing, this is the first thing to check.
+            </p>
+          </div>
+
+          <p>Each modal in the stack renders as:</p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span><span class="snippet-note">the element structure your animations and CSS target</span></div>
+            <pre><code data-lang="ts">&lt;div class="psm-root" style="--psm-index: 0" data-state="presented"&gt;
+  &lt;div class="psm-backdrop" /&gt;
+  &lt;div class="psm-wrapper" role="dialog" aria-modal="true" tabindex="-1"&gt;
+    &lt;div class="psm-handle" /&gt;      {/* sheet modals only */}
+    &lt;div class="psm-content"&gt;
+      {your content}
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+
+          <p>
+            <code>data-state</code> is <code>presenting</code>, <code>presented</code> or
+            <code>dismissing</code>, and <code>--psm-index</code> is the modal's position in the
+            stack — its z-index is <code>calc(var(--psm-z-index, 1000) + var(--psm-index))</code>.
+          </p>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="imperative">
+          <p class="eyebrow">API</p>
+          <h2>Imperative API<a class="anchor" href="#imperative" aria-label="Link to Imperative API">#</a></h2>
+
+          <h3 id="create-modal">createModal<a class="anchor" href="#create-modal" aria-label="Link to createModal">#</a></h3>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span></div>
+            <pre><code data-lang="ts">function createModal&lt;T = unknown&gt;(
+  content: ComponentChildren,
+  options?: ModalOptions&lt;T&gt;,
+): ModalRef&lt;T&gt;;</code></pre>
+          </div>
+
+          <p>
+            Opens a modal immediately and returns a handle. <code>content</code> is ordinary JSX —
+            it is rendered inside the container, with a context that <a href="#use-modal">useModal</a>
+            can read.
+          </p>
+
+          <h3 id="modal-ref">The modal handle<a class="anchor" href="#modal-ref" aria-label="Link to the modal handle">#</a></h3>
+
+          <div class="opts">
+            <div class="opt">
+              <div class="opt-name">id<span class="opt-type">string</span></div>
+              <div class="opt-body"><p>Unique per modal. Pass it to <code>closeModal</code> or to another modal's <code>putAfter</code>.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">close<span class="opt-type">(data?, role?) =&gt; Promise&lt;boolean&gt;</span></div>
+              <div class="opt-body">
+                <p>
+                  Closes the modal with a result. Resolves <code>true</code> once it is gone, or
+                  <code>false</code> if <a href="#can-dismiss">canDismiss</a> refused. Calling it
+                  again while a dismissal is in flight joins that one rather than starting another.
+                </p>
+              </div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">afterClose<span class="opt-type">Promise&lt;ModalDismissal&lt;T&gt;&gt;</span></div>
+              <div class="opt-body">
+                <p>
+                  Resolves to <code>{ data, role }</code> after the leave animation has finished and
+                  the content has been unmounted. It never rejects — a modal that will not close
+                  simply has not resolved yet.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <h3 id="close-modal">closeModal, closeAllModals<a class="anchor" href="#close-modal" aria-label="Link to closeModal">#</a></h3>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span></div>
+            <pre><code data-lang="ts">await closeModal(id, data, role);   // false if no such modal, or it refused
+await closeAllModals("navigation"); // topmost first; canDismiss still gets its say</code></pre>
+          </div>
+
+          <p>
+            <code>closeAllModals()</code> belongs in a route change, where a modal left behind is
+            always a bug. Modals whose <code>canDismiss</code> refuses stay open; the rest close.
+          </p>
+
+          <h3 id="reading-the-stack">hasModals, getTopModal<a class="anchor" href="#reading-the-stack" aria-label="Link to reading the stack">#</a></h3>
+
+          <p>
+            The stack itself is not exported. Handing it over invites a component to read
+            <code>modals$.value</code> while producing JSX, which subscribes that component to
+            every open and close — the one thing this package exists to avoid. What is exported is
+            three narrower things, split so the shape of the name tells you what it does.
+          </p>
+
+          <div class="opts">
+            <div class="opt">
+              <div class="opt-name">hasModals<span class="opt-type">() =&gt; boolean</span></div>
+              <div class="opt-body">
+                <p>
+                  Whether anything is open, right now. A plain read — it subscribes nothing, so
+                  it is safe anywhere: an event handler, a route guard, a component body.
+                </p>
+              </div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">getTopModal<span class="opt-type">() =&gt; OpenModal | undefined</span></div>
+              <div class="opt-body">
+                <p>
+                  The modal on top right now — the one Escape would close — or
+                  <code>undefined</code> when nothing is open. It carries <code>id</code>, the
+                  resolved <code>options</code>, a <code>state$</code> signal and
+                  <code>close()</code>. Also a plain read.
+                </p>
+              </div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">hasModals$<span class="opt-type">ReadonlySignal&lt;boolean&gt;</span></div>
+              <div class="opt-body">
+                <p>The reactive one. Derive from this, bind this.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span><span class="snippet-note">a read in a handler, a signal in a derivation</span></div>
+            <pre><code data-lang="ts">// imperative: what is true at this instant
+if (hasModals()) return;
+await getTopModal()?.close(undefined, "navigation");
+
+// reactive: dim a map, pause a video, suppress a shortcut
+const shortcutsEnabled = computed(() =&gt; !hasModals$.value);
+
+// in a component: derive, then bind — never unwrap in the body
+const label = useComputed(() =&gt; (hasModals$.value ? "busy" : "idle"));
+return &lt;span&gt;{label}&lt;/span&gt;;</code></pre>
+          </div>
+
+          <div class="note">
+            <span class="note-label">Why the split</span>
+            <p>
+              A function that quietly registered a dependency would be worse than either half.
+              <code>computed(() =&gt; !hasModals())</code> shows no signal at the call site, yet
+              would re-run on every modal — invisible reactivity, and in a package about not
+              re-rendering, invisible reactivity is the bug. So the functions read through
+              <code>peek</code> and never track, and anything that should track is spelled with a
+              <code>$</code>.
+            </p>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="component">
+          <h2>The Modal component<a class="anchor" href="#component" aria-label="Link to the Modal component">#</a></h2>
+
+          <p>
+            Use <code>createModal()</code> when the modal is the result of something that happened —
+            a click, a failed request, a route guard. Use <code>&lt;Modal&gt;</code> when it belongs
+            in the markup.
+          </p>
+
+          <p>
+            It renders nothing itself. It is a bridge between an open/closed state and the same
+            stack <code>createModal()</code> writes to, which is why a declarative modal and an
+            imperative one share a stacking order, a scroll lock and a focus trap. It takes every
+            <a href="#options">option</a> <code>createModal</code> takes, and then exactly one of
+            <code>trigger</code> and <code>isOpen</code> — never both, because they are two answers
+            to the same question: who owns the state. The props are a union, so passing both is a
+            type error.
+          </p>
+
+          <h3 id="trigger">trigger<a class="anchor" href="#trigger" aria-label="Link to trigger">#</a></h3>
+
+          <p>
+            The component owns the state. Name the <code>id</code> of an element and its click
+            opens the modal — exactly like <code>&lt;ion-modal trigger="…"&gt;</code>. Nothing to
+            wire up, and nothing to keep in step.
+          </p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span><span class="snippet-note">no signal anywhere</span></div>
+            <pre><code data-lang="ts">const Settings = () =&gt; (
+  &lt;&gt;
+    &lt;button type="button" id="settings-button"&gt;Settings&lt;/button&gt;
+
+    &lt;Modal trigger="settings-button" ariaLabel="Settings"&gt;
+      &lt;SettingsForm /&gt;
+    &lt;/Modal&gt;
+  &lt;/&gt;
+);</code></pre>
+          </div>
+
+          <p>
+            The element has to be in the document by the time the modal mounts; if it is not, you
+            get a console warning rather than a trigger that quietly never fires. Closing works
+            the usual ways — the backdrop, Escape, <code>useModal().close()</code> — and the next
+            click on the trigger opens a fresh modal.
+          </p>
+
+          <h3 id="is-open">isOpen<a class="anchor" href="#is-open" aria-label="Link to isOpen">#</a></h3>
+
+          <p>
+            You own the state, as a <code>ReadonlySignal&lt;boolean&gt;</code>. Two decisions worth
+            spelling out:
+          </p>
+
+          <ul>
+            <li>
+              <strong>A signal, not a boolean.</strong> A plain boolean would come from component
+              state, so every open and close would re-render the owning component and everything
+              under it.
+            </li>
+            <li>
+              <strong>Read-only.</strong> The modal does not write to state it does not own. That
+              also means the prop takes anything signal-shaped — a <code>computed</code>, a
+              selector from a store — not just a <code>useSignal</code> it could have written back
+              to.
+            </li>
+          </ul>
+
+          <p>
+            The other half of that bargain is yours. The modal still closes on the backdrop, on
+            Escape and on a swipe; <code>onDidDismiss</code> is where you set your signal back:
+          </p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span></div>
+            <pre><code data-lang="ts">const isOpen = useSignal(false);
+
+&lt;Modal isOpen={isOpen} onDidDismiss={() =&gt; (isOpen.value = false)} ariaLabel="Settings"&gt;
+  &lt;SettingsForm /&gt;
+&lt;/Modal&gt;
+
+// or drive it from somewhere else entirely
+const isOpen = computed(() =&gt; route.value === "/settings");</code></pre>
+          </div>
+
+          <div class="note warn">
+            <span class="note-label">If you skip the sync</span>
+            <p>
+              A signal left at <code>true</code> for a modal that has already been dismissed does
+              not spring it open again — the modal only opens when the signal goes from
+              <code>false</code> to <code>true</code>. But it will read <code>true</code> for a
+              modal that is not there, and the next <code>true</code> will not be a change at all,
+              so it will not reopen either. Set it back in <code>onDidDismiss</code>.
+            </p>
+          </div>
+
+          <p>
+            When <code>canDismiss</code> refuses, nothing closes and nothing needs syncing —
+            <code>onDidDismiss</code> never fires.
+          </p>
+
+          <div class="note">
+            <span class="note-label">Unmounting</span>
+            <p>
+              A <code>&lt;Modal&gt;</code> that unmounts takes its modal with it, whichever way it
+              was driven. Leaving an orphan on screen with no way to reach it would be worse.
+            </p>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="use-modal">
+          <h2>useModal<a class="anchor" href="#use-modal" aria-label="Link to useModal">#</a></h2>
+
+          <p>
+            Inside modal content, <code>useModal()</code> is how you close with a result. It throws
+            outside a modal, because the alternative is a <code>close()</code> that silently does
+            nothing.
+          </p>
+
+          <div class="opts">
+            <div class="opt">
+              <div class="opt-name">id<span class="opt-type">string</span></div>
+              <div class="opt-body"><p>The id of the modal this component is rendered in.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">close<span class="opt-type">(data?, role?) =&gt; Promise&lt;boolean&gt;</span></div>
+              <div class="opt-body"><p>Same as the handle's — this is the one to reach for in a button's onClick.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">breakpoint$<span class="opt-type">ReadonlySignal&lt;number | undefined&gt;</span></div>
+              <div class="opt-body">
+                <p>
+                  Where a <a href="#sheet">sheet</a> currently sits, or <code>undefined</code> for a
+                  regular modal. Bind it, or derive from it — do not unwrap it during render.
+                </p>
+              </div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">setBreakpoint<span class="opt-type">(breakpoint: number) =&gt; Promise&lt;void&gt;</span></div>
+              <div class="opt-body"><p>Animates a sheet to one of its breakpoints. <code>0</code> dismisses it.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="dismissal">
+          <h2>Dismissal and roles<a class="anchor" href="#dismissal" aria-label="Link to dismissal and roles">#</a></h2>
+
+          <p>
+            Every dismissal carries a <code>role</code> saying how it happened. Without one you
+            cannot tell "the user chose No" from "the user tapped outside", and those usually mean
+            very different things.
+          </p>
+
+          <div class="table-wrap"><table>
+            <thead><tr><th>Role</th><th>Set when</th></tr></thead>
+            <tbody>
+              <tr><td><code>backdrop</code></td><td>the backdrop itself was clicked (never a click that bubbled up from the content)</td></tr>
+              <tr><td><code>escape</code></td><td>Escape was pressed — only the topmost modal ever sees it</td></tr>
+              <tr><td><code>gesture</code></td><td>a sheet was swiped down past its lowest breakpoint</td></tr>
+              <tr><td><code>handler</code></td><td>code asked: <code>close()</code>, <code>closeModal()</code>, or <code>isOpen</code> going false</td></tr>
+              <tr><td><code>"…"</code></td><td>anything you pass yourself — <code>close(value, "confirm")</code> — travels through untouched</td></tr>
+            </tbody>
+          </table></div>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span></div>
+            <pre><code data-lang="ts">const { data, role } = await modal.afterClose;
+
+switch (role) {
+  case "confirm": return save(data);
+  case "backdrop":
+  case "escape":  return; // the user walked away — do nothing
+}</code></pre>
+          </div>
+
+          <p>The lifecycle hooks fire in this order, and both dismiss hooks receive the same object:</p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span></div>
+            <pre><code data-lang="ts">onWillPresent()   // before the enter animation
+onDidPresent()    // after it
+onWillDismiss({ data, role })  // after canDismiss agreed, before the leave animation
+onDidDismiss({ data, role })   // after it, once the content is unmounted</code></pre>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="can-dismiss">
+          <h2>canDismiss<a class="anchor" href="#can-dismiss" aria-label="Link to canDismiss">#</a></h2>
+
+          <p>
+            A form with unsaved changes should not vanish because someone missed the modal by ten
+            pixels. <code>canDismiss</code> vetoes a dismissal — from any source, including your own
+            <code>close()</code>:
+          </p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span><span class="snippet-note">the draft lives outside, so the guard and the form read one signal</span></div>
+            <pre><code data-lang="ts">const draft = signal("");
+
+const modal = createModal(&lt;EditNote draft={draft} /&gt;, {
+  canDismiss: ({ role }) =&gt; role === "save" || draft.peek().length === 0,
+});</code></pre>
+          </div>
+
+          <p>
+            It may be a boolean or a function, and the function may be async — the modal stays open
+            until it resolves, and stays open for good if it resolves <code>false</code>. Ask the
+            user first, if that is what the situation calls for:
+          </p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span><span class="snippet-note">a modal guarding a modal</span></div>
+            <pre><code data-lang="ts">canDismiss: async ({ role }) =&gt; {
+  if (role === "save" || !isDirty.peek()) return true;
+
+  const confirm = createModal&lt;boolean&gt;(&lt;Confirm question="Discard changes?" /&gt;);
+  const { data } = await confirm.afterClose;
+  return data === true;
+},</code></pre>
+          </div>
+
+          <div class="note">
+            <span class="note-label">After a refusal</span>
+            <p>
+              A refused dismissal leaves the modal exactly as it was — still presented, still
+              closable. <code>close()</code> resolves <code>false</code> so the caller can tell the
+              difference, and neither dismiss hook fires.
+            </p>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="options">
+          <p class="eyebrow">Reference</p>
+          <h2>Options<a class="anchor" href="#options" aria-label="Link to options">#</a></h2>
+
+          <p>
+            Every option is accepted both by <code>createModal(content, options)</code> and as a
+            prop on <code>&lt;Modal&gt;</code>. Anything left out falls back to
+            <a href="#configuration">configureModal</a>, and then to the built-in default shown here.
+          </p>
+
+          <div class="opts">
+            <div class="opt">
+              <div class="opt-name">mode<span class="opt-type">"ios" | "md"</span></div>
+              <div class="opt-body"><p>Which preset to animate with. Defaults to the platform: <code>ios</code> on iOS and iPadOS, <code>md</code> everywhere else.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">animated<span class="opt-type">boolean — true</span></div>
+              <div class="opt-body"><p>Set <code>false</code> to appear and disappear instantly. Already <code>false</code> for anyone whose OS asks for reduced motion.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">enterAnimation, leaveAnimation<span class="opt-type">AnimationBuilder</span></div>
+              <div class="opt-body"><p>Replace the preset for this modal. See <a href="#custom-animations">Your own animation</a>.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">showBackdrop<span class="opt-type">boolean — true</span></div>
+              <div class="opt-body"><p>With <code>false</code> the backdrop is not rendered and the page behind stays clickable — the modal layer itself never swallows pointer events.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">backdropDismiss<span class="opt-type">boolean — true</span></div>
+              <div class="opt-body"><p>Clicking the backdrop closes with role <code>backdrop</code>.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">keyboardClose<span class="opt-type">boolean — true</span></div>
+              <div class="opt-body"><p>Escape closes with role <code>escape</code>. The topmost modal swallows the key either way, so it never falls through to one underneath.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">scrollLock<span class="opt-type">boolean — true</span></div>
+              <div class="opt-body"><p>Locks body scroll while the modal is open, reference counted across the stack, with scrollbar-width compensation so the layout does not jump.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">focusTrap<span class="opt-type">boolean — true</span></div>
+              <div class="opt-body"><p>Autofocus, Tab containment, focus restore and <code>inert</code> on the rest of the page. See <a href="#accessibility">Accessibility</a>.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">canDismiss<span class="opt-type">boolean | (d) =&gt; boolean | Promise&lt;boolean&gt;</span></div>
+              <div class="opt-body"><p>Vetoes a dismissal. See <a href="#can-dismiss">canDismiss</a>.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">modalClass, backdropClass<span class="opt-type">string</span></div>
+              <div class="opt-body"><p>Added to <code>.psm-wrapper</code> and <code>.psm-backdrop</code>.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">modalStyle, backdropStyle<span class="opt-type">string | Record&lt;string, string | number&gt;</span></div>
+              <div class="opt-body"><p>Inline styles for the same two elements. Custom properties are passed through as written: <code>{ "--psm-width": "40rem" }</code>.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">putAfter<span class="opt-type">string</span></div>
+              <div class="opt-body">
+                <p>
+                  Slot this modal directly above the one with that id, instead of on top of
+                  everything. That is how a modal opened <em>from</em> another can still sit below a
+                  third one that was already there.
+                </p>
+              </div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">ariaLabel, ariaLabelledBy, ariaDescribedBy<span class="opt-type">string</span></div>
+              <div class="opt-body"><p>Put on the dialog element. Give every modal one of the first two.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">breakpoints, initialBreakpoint, backdropBreakpoint, handle, handleBehavior, expandToScroll<span class="opt-type">sheet</span></div>
+              <div class="opt-body"><p>See <a href="#sheet">Sheet modals</a>.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">onWillPresent, onDidPresent, onWillDismiss, onDidDismiss<span class="opt-type">callbacks</span></div>
+              <div class="opt-body"><p>See <a href="#dismissal">Dismissal and roles</a>.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="animations">
+          <p class="eyebrow">Motion</p>
+          <h2>Animations<a class="anchor" href="#animations" aria-label="Link to animations">#</a></h2>
+
+          <h3 id="presets">The presets<a class="anchor" href="#presets" aria-label="Link to the presets">#</a></h3>
+
+          <p>
+            The stock transitions are ports of Ionic's own, keyframe for keyframe. A modal from this
+            package moves exactly like an <code>&lt;ion-modal&gt;</code>:
+          </p>
+
+          <div class="table-wrap"><table>
+            <thead><tr><th></th><th>Duration</th><th>Easing</th><th>Movement</th></tr></thead>
+            <tbody>
+              <tr><td><code>ios</code> enter</td><td>500ms</td><td><code>cubic-bezier(0.32,0.72,0,1)</code></td><td>translateY(100vh) → 0, backdrop 0.01 → full</td></tr>
+              <tr><td><code>ios</code> leave</td><td>500ms</td><td><code>cubic-bezier(0.32,0.72,0,1)</code></td><td>the same, reversed</td></tr>
+              <tr><td><code>md</code> enter</td><td>280ms</td><td><code>cubic-bezier(0.36,0.66,0.04,1)</code></td><td>opacity 0.01 → 1, translateY(40px) → 0</td></tr>
+              <tr><td><code>md</code> leave</td><td>200ms</td><td><code>cubic-bezier(0.47,0,0.745,0.715)</code></td><td>opacity 0.99 → 0, translateY(0) → 40px</td></tr>
+            </tbody>
+          </table></div>
+
+          <p>
+            They are exported as <code>iosEnterAnimation</code>, <code>iosLeaveAnimation</code>,
+            <code>mdEnterAnimation</code> and <code>mdLeaveAnimation</code>, so you can build on one
+            rather than starting over.
+          </p>
+
+          <div class="note">
+            <span class="note-label">Reduced motion</span>
+            <p>
+              A user whose OS asks for less motion gets none of ours: <code>animated</code> resolves
+              to <code>false</code> and both animations land on their final frame at once. Nothing
+              to configure.
+            </p>
+          </div>
+
+          <h3 id="custom-animations">Your own animation<a class="anchor" href="#custom-animations" aria-label="Link to custom animations">#</a></h3>
+
+          <p>
+            An <code>AnimationBuilder</code> is handed the modal's root element and the current
+            options, and returns an animation. Reach into it for
+            <code>.psm-backdrop</code>, <code>.psm-wrapper</code> and <code>.psm-content</code>:
+          </p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span><span class="snippet-note">a zoom instead of a slide</span></div>
+            <pre><code data-lang="ts">import { createAnimation } from "@dmytromykhailiuk/preact-signal-modal";
+import type { AnimationBuilder } from "@dmytromykhailiuk/preact-signal-modal";
+
+const zoomEnter: AnimationBuilder = (baseEl) =&gt;
+  createAnimation()
+    .addElement(baseEl)
+    .duration(300)
+    .easing("cubic-bezier(0.32,0.72,0,1)")
+    .addAnimation([
+      createAnimation()
+        .addElement(baseEl.querySelector(".psm-backdrop"))
+        .fromTo("opacity", 0, "var(--psm-backdrop-opacity, 0.32)"),
+      createAnimation()
+        .addElement(baseEl.querySelector(".psm-wrapper"))
+        .fromTo("transform", "scale(0.8)", "scale(1)")
+        .fromTo("opacity", 0, 1),
+    ]);
+
+createModal(&lt;Confirm /&gt;, { enterAnimation: zoomEnter, leaveAnimation: zoomLeave });</code></pre>
+          </div>
+
+          <p>
+            Timing set on the parent is inherited by children that do not define their own — that is
+            how one <code>duration(300)</code> drives the backdrop and the modal together. The
+            second argument tells you the <code>mode</code>, and for a sheet, the
+            <code>currentBreakpoint</code> and <code>backdropBreakpoint</code> it is moving between.
+          </p>
+
+          <h3 id="create-animation">createAnimation<a class="anchor" href="#create-animation" aria-label="Link to createAnimation">#</a></h3>
+
+          <p>
+            A port of Ionic's animation builder on the Web Animations API. The methods you are
+            likely to need:
+          </p>
+
+          <div class="opts">
+            <div class="opt">
+              <div class="opt-name">addElement, addAnimation<span class="opt-type">structure</span></div>
+              <div class="opt-body"><p><code>addElement</code> takes an element or a NodeList and ignores <code>null</code>, so a <code>querySelector</code> that finds nothing is harmless. <code>addAnimation</code> nests one animation or an array of them.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">duration, easing, delay, fill, direction, iterations<span class="opt-type">timing</span></div>
+              <div class="opt-body"><p>Set on a parent, inherited by children that leave them unset.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">from, to, fromTo, keyframes<span class="opt-type">what moves</span></div>
+              <div class="opt-body"><p><code>fromTo</code> repeated for several properties merges into the same two frames. <code>keyframes</code> takes the full array when you need offsets in between.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">beforeStyles, beforeAddClass, afterClearStyles, afterAddClass, …<span class="opt-type">hooks</span></div>
+              <div class="opt-body"><p>Applied to the animation's elements before the first frame and after the last. There are <code>beforeAddRead</code> / <code>beforeAddWrite</code> pairs too, for measuring without thrashing layout.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">play, pause, stop, destroy, onFinish<span class="opt-type">playback</span></div>
+              <div class="opt-body"><p><code>play()</code> resolves when the animation finishes <em>or</em> is stopped. <code>onFinish</code> receives <code>1</code> when it ran to the end and <code>0</code> when it was reversed.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">progressStart, progressStep, progressEnd<span class="opt-type">gestures</span></div>
+              <div class="opt-body"><p>Scrub an animation by hand, then hand control back. This is what makes a finger-driven transition possible.</p></div>
+            </div>
+          </div>
+
+          <div class="note">
+            <span class="note-label">No Web Animations, no problem</span>
+            <p>
+              Where <code>Element.prototype.animate</code> is missing — jsdom, server rendering —
+              an animation still runs its hooks and finishes synchronously. The lifecycle completes
+              and only the motion is lost, so tests and SSR need no special casing.
+            </p>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="styling">
+          <p class="eyebrow">Appearance</p>
+          <h2>Styling<a class="anchor" href="#styling" aria-label="Link to styling">#</a></h2>
+
+          <p>
+            The stylesheet is injected into <code>&lt;head&gt;</code> the first time a modal opens,
+            once per document. Everything visual is a custom property with an inline fallback — set
+            one on <code>:root</code>, on any ancestor, or on the modal itself:
+          </p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">sh</span><span class="snippet-note">every token, with its default</span></div>
+            <pre><code data-lang="sh">--psm-background          #fff
+--psm-color               inherit
+--psm-width               auto
+--psm-min-width           300px
+--psm-max-width           calc(100vw - 2rem)
+--psm-height              auto
+--psm-max-height          calc(100vh - 2rem)
+--psm-border-radius       12px
+--psm-box-shadow          0 10px 40px -8px rgba(0, 0, 0, 0.35)
+--psm-padding             1.25rem
+--psm-backdrop-color      #000
+--psm-backdrop-opacity    0.32
+--psm-z-index             1000
+--psm-sheet-border-radius 16px
+--psm-sheet-expanded-border-radius 0
+--psm-sheet-padding       0 1.25rem 1.25rem
+--psm-handle-color        rgba(0, 0, 0, 0.24)</code></pre>
+          </div>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">sh</span><span class="snippet-note">globally, or per modal</span></div>
+            <pre><code data-lang="sh">:root {
+  --psm-border-radius: 14px;
+  --psm-max-width: 32rem;
+  --psm-backdrop-opacity: 0.45;
+}</code></pre>
+          </div>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span></div>
+            <pre><code data-lang="ts">createModal(&lt;Gallery /&gt;, {
+  modalStyle: { "--psm-width": "min(60rem, 90vw)", "--psm-padding": "0" },
+});</code></pre>
+          </div>
+
+          <p>
+            Because the injected sheet is appended at runtime, it would outrank an app's own
+            <code>:root</code> declarations if it defined the tokens itself. It does not — the
+            defaults live inline in each <code>var()</code>, so your values always win.
+          </p>
+
+          <div class="note">
+            <span class="note-label">CSP and SSR</span>
+            <p>
+              Injecting a <code>&lt;style&gt;</code> needs <code>style-src 'unsafe-inline'</code>,
+              and there is no <code>&lt;head&gt;</code> to inject into on the server. Turn injection
+              off and import the identical bytes as a file:
+            </p>
+          </div>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span></div>
+            <pre><code data-lang="ts">configureModal({ injectStyles: false });
+import "@dmytromykhailiuk/preact-signal-modal/styles.css";</code></pre>
+          </div>
+
+          <p>
+            <code>ensureModalStyles()</code> injects it on demand, which is worth knowing about
+            when rendering into a second document such as a popup window. Everything else about
+            the stylesheet — its text, the id of the element it lands in — is an implementation
+            detail and is not exported.
+          </p>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="sheet">
+          <h2>Sheet modals<a class="anchor" href="#sheet" aria-label="Link to sheet modals">#</a></h2>
+
+          <p>Give a modal <code>breakpoints</code> and it becomes a sheet you can drag, flick and swipe away:</p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span></div>
+            <pre><code data-lang="ts">createModal(&lt;Filters /&gt;, {
+  breakpoints: [0, 0.25, 0.5, 1],
+  initialBreakpoint: 0.25,
+  handleBehavior: "cycle",
+});</code></pre>
+          </div>
+
+          <h3 id="breakpoints">Breakpoints<a class="anchor" href="#breakpoints" aria-label="Link to breakpoints">#</a></h3>
+
+          <div class="opts">
+            <div class="opt">
+              <div class="opt-name">breakpoints<span class="opt-type">number[]</span></div>
+              <div class="opt-body"><p>Fractions of the viewport height the sheet may rest at, <code>0</code> to <code>1</code>. Include <code>0</code> to let it be swiped away. Sorted and de-duplicated for you.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">initialBreakpoint<span class="opt-type">number — required</span></div>
+              <div class="opt-body">
+                <p>
+                  Where it opens. It must be one of <code>breakpoints</code>, and you get a thrown
+                  error if it is not — a sheet resting at a position it can never return to is far
+                  harder to notice later than an error at the call site.
+                </p>
+              </div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">backdropBreakpoint<span class="opt-type">number — 0</span></div>
+              <div class="opt-body"><p>Below this point the backdrop is fully transparent and lets clicks through, so a peeking sheet does not block the page behind it. Above it, opacity ramps linearly to full.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">handle<span class="opt-type">boolean — true for sheets</span></div>
+              <div class="opt-body"><p>The grab bar at the top.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">handleBehavior<span class="opt-type">"none" | "cycle" — "none"</span></div>
+              <div class="opt-body"><p><code>cycle</code> makes a tap on the handle advance to the next breakpoint, wrapping past the top. The handle becomes a real <code>&lt;button&gt;</code> only in that case, so it is never a pointless tab stop.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">expandToScroll<span class="opt-type">boolean — true</span></div>
+              <div class="opt-body"><p>Ionic's default: content only scrolls at the tallest breakpoint. Set <code>false</code> and the content's max-height grows with the sheet, so it scrolls at every breakpoint.</p></div>
+            </div>
+          </div>
+
+          <div class="note">
+            <span class="note-label">Corners at full screen</span>
+            <p>
+              A sheet is rounded across the top — until it reaches breakpoint <code>1</code>, where
+              it covers the viewport and those corners would have nothing but backdrop behind
+              them. At that point the root carries <code>data-fullscreen="true"</code> and the
+              radius goes to <code>--psm-sheet-expanded-border-radius</code>, which is
+              <code>0</code>. Set it back to <code>var(--psm-sheet-border-radius)</code> to keep
+              the curve, and style anything else off the same attribute:
+            </p>
+          </div>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">sh</span></div>
+            <pre><code data-lang="sh">.psm-root--sheet[data-fullscreen="true"] .psm-handle {
+  opacity: 0;
+}</code></pre>
+          </div>
+
+          <h3 id="gestures">Gestures<a class="anchor" href="#gestures" aria-label="Link to gestures">#</a></h3>
+
+          <p>
+            A slow drag snaps to the nearest breakpoint. A flick carries on to the next one in the
+            direction of travel. Landing on <code>0</code> dismisses with role
+            <code>gesture</code>.
+          </p>
+
+          <p>
+            The sheet can be dragged from anywhere, not just the handle — except when the content
+            is scrolled down, where the scroll wins, because otherwise you could never scroll back
+            up. From inside the sheet, <code>useModal()</code> gives you
+            <code>breakpoint$</code> and <code>setBreakpoint()</code>:
+          </p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span></div>
+            <pre><code data-lang="ts">const Filters = () =&gt; {
+  const modal = useModal();
+  const label = useComputed(() =&gt; (modal.breakpoint$.value === 1 ? "Collapse" : "Expand"));
+
+  return (
+    &lt;button type="button" onClick={() =&gt; modal.setBreakpoint(modal.breakpoint$.peek() === 1 ? 0.5 : 1)}&gt;
+      {label}
+    &lt;/button&gt;
+  );
+};</code></pre>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="accessibility">
+          <p class="eyebrow">Behaviour</p>
+          <h2>Accessibility<a class="anchor" href="#accessibility" aria-label="Link to accessibility">#</a></h2>
+
+          <p>
+            The dialog is <code>role="dialog"</code> with <code>aria-modal="true"</code>. It is not
+            a native <code>&lt;dialog&gt;</code>: that can only be opened through
+            <code>showModal()</code>, which brings its own top-layer stacking, backdrop and
+            dismissal — all of which this package already owns and animates.
+          </p>
+
+          <div class="opts">
+            <div class="opt">
+              <div class="opt-name">Focus in<span class="opt-type">on present</span></div>
+              <div class="opt-body"><p>The first focusable element inside the modal is focused, or the dialog itself when there is nothing to focus.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">Focus contained<span class="opt-type">while open</span></div>
+              <div class="opt-body"><p>Tab and Shift+Tab wrap inside the modal, and focus that drifts outside is pulled back. Only the topmost modal traps.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">Focus out<span class="opt-type">on dismiss</span></div>
+              <div class="opt-body"><p>Focus returns to whatever had it before — unless the user has since clicked elsewhere, in which case it is left alone.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">The rest of the page<span class="opt-type">inert + aria-hidden</span></div>
+              <div class="opt-body">
+                <p>
+                  Worked out by walking up from the modal element to <code>&lt;body&gt;</code> and
+                  hiding, at each step, every child that is not on the path back down. The usual
+                  recipe — hide every sibling of <code>&lt;body&gt;</code> — assumes the modal was
+                  portalled there, and this one deliberately is not.
+                </p>
+                <p>
+                  Because each modal records the state it found, stacked modals nest correctly on
+                  their own: the second sees the page already hidden and leaves it that way when it
+                  closes, while the first modal's layer is handed back.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="note">
+            <span class="note-label">Give it a name</span>
+            <p>
+              Nothing can infer what a dialog is for. Pass <code>ariaLabel</code>, or
+              <code>ariaLabelledBy</code> pointing at your heading, on every modal.
+            </p>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="configuration">
+          <h2>Configuration<a class="anchor" href="#configuration" aria-label="Link to configuration">#</a></h2>
+
+          <p>
+            <code>configureModal()</code> sets the defaults for every modal created from then on.
+            Call it once at startup; modals already on screen keep the settings they were created
+            with.
+          </p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span></div>
+            <pre><code data-lang="ts">configureModal({
+  mode: "ios",
+  baseZIndex: 4000,
+  backdropDismiss: false,
+  enterAnimation: zoomEnter,
+  leaveAnimation: zoomLeave,
+});</code></pre>
+          </div>
+
+          <p>
+            It takes <code>mode</code>, <code>animated</code>, <code>showBackdrop</code>,
+            <code>backdropDismiss</code>, <code>keyboardClose</code>, <code>scrollLock</code>,
+            <code>focusTrap</code>, <code>expandToScroll</code>, <code>handleBehavior</code>,
+            <code>enterAnimation</code>, <code>leaveAnimation</code>, plus two that only exist
+            here:
+          </p>
+
+          <div class="opts">
+            <div class="opt">
+              <div class="opt-name">baseZIndex<span class="opt-type">number — 1000</span></div>
+              <div class="opt-body"><p>The z-index of the first modal; each one above it gets +1. Equivalent to setting <code>--psm-z-index</code> in CSS.</p></div>
+            </div>
+            <div class="opt">
+              <div class="opt-name">injectStyles<span class="opt-type">boolean — true</span></div>
+              <div class="opt-body"><p>Whether to put the stylesheet in <code>&lt;head&gt;</code> on first use. See <a href="#styling">Styling</a>.</p></div>
+            </div>
+          </div>
+
+          <p><code>getModalConfig()</code> returns the current values, if you need to read them back.</p>
+        </section>
+
+        <!-- ─────────────────────────────────────────────────────────── -->
+        <section id="typescript">
+          <h2>TypeScript<a class="anchor" href="#typescript" aria-label="Link to TypeScript">#</a></h2>
+
+          <p>
+            <code>createModal&lt;T&gt;()</code> types both ends: <code>close(data)</code> only
+            accepts a <code>T</code>, and <code>afterClose</code> resolves to
+            <code>ModalDismissal&lt;T&gt;</code>. <code>useModal&lt;T&gt;()</code> inside the
+            content agrees with it.
+          </p>
+
+          <div class="snippet">
+            <div class="snippet-head"><span class="snippet-lang">ts</span></div>
+            <pre><code data-lang="ts">const modal = createModal&lt;{ id: string }&gt;(&lt;Picker /&gt;);
+const { data, role } = await modal.afterClose;
+//      ^? { id: string } | undefined</code></pre>
+          </div>
+
+          <h4>The compiler catches</h4>
+          <ul>
+            <li>Closing with the wrong shape of result.</li>
+            <li>Passing a plain boolean to <code>&lt;Modal isOpen&gt;</code> instead of a signal.</li>
+            <li>An <code>AnimationBuilder</code> that forgets to return an animation.</li>
+            <li>Reading <code>data</code> without checking it is there — it is optional, because a modal can always be dismissed without answering. That is the type system telling you to look at <code>role</code>.</li>
+          </ul>
+
+          <h4>Runtime only</h4>
+          <ul>
+            <li>An <code>initialBreakpoint</code> that is not in <code>breakpoints</code>, or a breakpoint outside 0…1 — both throw at <code>createModal</code>.</li>
+            <li><code>useModal()</code> outside a modal — it throws rather than returning a handle that does nothing.</li>
+            <li>A <code>trigger</code> id that matches no element — a console warning.</li>
+          </ul>
+        </section>
+
+        <footer>
+          <p>
+            @dmytromykhailiuk/preact-signal-modal · MIT ·
+            <a href="https://github.com/dmytromykhailiuk/preact-signal-modal">GitHub</a> ·
+            <a href="https://www.npmjs.com/package/@dmytromykhailiuk/preact-signal-modal">npm</a>
+          </p>
+        </footer>
+      </main>
+    </div>
+    <script>
+      (function () {
+        "use strict";
+
+        // Everything here is progressive enhancement: the page is fully readable
+        // without it. Each part is isolated so one failure cannot take the rest down.
+        function attempt(fn) {
+          try {
+            fn();
+          } catch (err) {
+            if (window.console) console.warn("[docs]", err);
+          }
+        }
+
+        /* ── theme toggle ─────────────────────────────────────────────── */
+        attempt(function () {
+          var root = document.documentElement;
+          var toggle = document.getElementById("theme-toggle");
+          if (!toggle) return;
+
+          function prefersDark() {
+            // matchMedia is missing in some embedded/older engines — treating that
+            // as "light" is harmless, throwing here would kill the whole script.
+            return (
+              typeof window.matchMedia === "function" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches
+            );
+          }
+          function currentTheme() {
+            return (
+              root.getAttribute("data-theme") ||
+              (prefersDark() ? "dark" : "light")
+            );
+          }
+          function label() {
+            toggle.setAttribute(
+              "aria-label",
+              currentTheme() === "dark"
+                ? "Switch to light theme"
+                : "Switch to dark theme"
+            );
+          }
+          toggle.addEventListener("click", function () {
+            root.setAttribute(
+              "data-theme",
+              currentTheme() === "dark" ? "light" : "dark"
+            );
+            label();
+          });
+          label();
+        });
+
+        /* ── mobile navigation drawer ─────────────────────────────────── */
+        attempt(function () {
+          var body = document.body;
+          var toggle = document.getElementById("nav-toggle");
+          var scrim = document.getElementById("nav-scrim");
+          var rail = document.getElementById("site-rail");
+          if (!toggle || !rail) return;
+
+          function setOpen(open) {
+            body.classList.toggle("nav-open", open);
+            toggle.setAttribute("aria-expanded", open ? "true" : "false");
+            toggle.setAttribute(
+              "aria-label",
+              open ? "Close navigation" : "Open navigation"
+            );
+          }
+          toggle.addEventListener("click", function () {
+            setOpen(!body.classList.contains("nav-open"));
+          });
+          if (scrim) {
+            scrim.addEventListener("click", function () {
+              setOpen(false);
+            });
+          }
+          // picking a destination closes the drawer
+          Array.prototype.forEach.call(
+            rail.querySelectorAll("nav.toc a"),
+            function (link) {
+              link.addEventListener("click", function () {
+                setOpen(false);
+              });
+            }
+          );
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") setOpen(false);
+          });
+        });
+
+        /* ── syntax highlighting ──────────────────────────────────────── */
+        var KEYWORDS = new Set([
+          "const",
+          "let",
+          "var",
+          "function",
+          "return",
+          "import",
+          "export",
+          "from",
+          "type",
+          "interface",
+          "extends",
+          "implements",
+          "new",
+          "class",
+          "if",
+          "else",
+          "for",
+          "of",
+          "in",
+          "await",
+          "async",
+          "true",
+          "false",
+          "null",
+          "undefined",
+          "as",
+          "typeof",
+          "default",
+          "this",
+          "void",
+        ]);
+        var PATTERN =
+          /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)/g;
+
+        function esc(s) {
+          return s
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+        }
+
+        function highlight(code, isJson) {
+          var out = "",
+            last = 0,
+            m;
+          PATTERN.lastIndex = 0;
+          while ((m = PATTERN.exec(code)) !== null) {
+            out += esc(code.slice(last, m.index));
+            if (m[1]) {
+              out += '<span class="tok-com">' + esc(m[1]) + "</span>";
+            } else if (m[2]) {
+              // In JSON, a string immediately followed by ':' is a key.
+              var after = code.slice(PATTERN.lastIndex);
+              var isKey = isJson && /^\s*:/.test(after);
+              out +=
+                '<span class="' +
+                (isKey ? "tok-key" : "tok-str") +
+                '">' +
+                esc(m[2]) +
+                "</span>";
+            } else if (m[3]) {
+              out += '<span class="tok-num">' + esc(m[3]) + "</span>";
+            } else if (m[4] && KEYWORDS.has(m[4])) {
+              out += '<span class="tok-kw">' + esc(m[4]) + "</span>";
+            } else {
+              out += esc(m[0]);
+            }
+            last = PATTERN.lastIndex;
+          }
+          return out + esc(code.slice(last));
+        }
+
+        attempt(function () {
+          Array.prototype.forEach.call(
+            document.querySelectorAll("code[data-lang]"),
+            function (block) {
+              var lang = block.getAttribute("data-lang");
+              if (lang === "sh") return;
+              block.innerHTML = highlight(block.textContent, lang === "json");
+            }
+          );
+        });
+
+        /* ── table-of-contents scroll spy ─────────────────────────────── */
+        attempt(function () {
+          if (!("IntersectionObserver" in window)) return;
+
+          var byId = {};
+          var targets = [];
+          Array.prototype.forEach.call(
+            document.querySelectorAll("nav.toc a"),
+            function (link) {
+              var id = link.getAttribute("href").slice(1);
+              var el = document.getElementById(id);
+              if (!el) return;
+              byId[id] = link;
+              targets.push(el);
+            }
+          );
+          if (!targets.length) return;
+
+          var active = null;
+          function setActive(id) {
+            if (id === active) return;
+            if (active && byId[active])
+              byId[active].classList.remove("is-active");
+            active = id;
+            if (byId[id]) byId[id].classList.add("is-active");
+          }
+
+          var visible = {};
+          var observer = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                visible[entry.target.id] = entry.isIntersecting;
+              });
+              // Highlight the first section, in document order, that is on screen.
+              for (var i = 0; i < targets.length; i++) {
+                if (visible[targets[i].id]) {
+                  setActive(targets[i].id);
+                  return;
+                }
+              }
+            },
+            { rootMargin: "0px 0px -70% 0px", threshold: 0 }
+          );
+          targets.forEach(function (el) {
+            observer.observe(el);
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
