@@ -1,6 +1,6 @@
 {
   "name": "@dmytromykhailiuk/preact-signal-modal",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Signal-driven modals for Preact: imperative createModal() with an awaitable result, a declarative <Modal isOpen> component, Ionic-identical Web Animations API transitions, sheet modals with breakpoints, focus trap and zero re-renders.",
   "type": "module",
   "sideEffects": false,
@@ -83,5 +83,5 @@
   "bugs": {
     "url": "https://github.com/dmytromykhailiuk/preact-signal-modal/issues"
   },
-  "homepage": "https://github.com/dmytromykhailiuk/preact-signal-modal#readme"
+  "homepage": "https://dmytromykhailiuk.github.io/preact-signal-modal/"
 }
